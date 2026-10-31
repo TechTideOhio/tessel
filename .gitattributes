@@ -7,3 +7,4 @@ packs/** linguist-vendored
 evals/** linguist-vendored
 out/** linguist-vendored
 dimensions.toml linguist-vendored
+*.ps1 linguist-vendored
