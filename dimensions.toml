@@ -1,0 +1,91 @@
+[spec]
+id = "softfactory-core"
+version = "1.0.0"
+seed = 357
+coverage = "pairwise"
+sample = 100
+description = "Canonical multi-agent software factory dimension pack calibrated against 459 production traces."
+
+[[dimension]]
+name = "persona"
+values = [
+  { id = "dispatched-worker", weight = 4, hint = "Headless worker agent executing a delegated task" },
+  { id = "operator",          weight = 3, hint = "Human engineer in interactive terminal session" },
+  { id = "reviewer",          weight = 2, hint = "Code reviewer validating diffs and gates" },
+  { id = "new-contributor",   weight = 1, hint = "New contributor exploring public repos" },
+  { id = "release-manager",   weight = 1, hint = "Release coordinator tagging and publishing binaries" },
+]
+
+[[dimension]]
+name = "intent"
+values = [
+  { id = "fix",              weight = 4, hint = "Bug fix with focused reproduction test" },
+  { id = "feature",          weight = 3, hint = "New feature or interface addition" },
+  { id = "refactor",         weight = 2, hint = "Structure improvement with zero behavior drift" },
+  { id = "verify-only",      weight = 2, hint = "Running gates and checks without code edits" },
+  { id = "read-only-review", weight = 2, hint = "Repository architecture and hygiene audit" },
+  { id = "migrate",          weight = 1, hint = "Upgrading dependencies or lockfile versions" },
+  { id = "docs",             weight = 1, hint = "Documentation and architecture guide updates" },
+  { id = "smoke",            weight = 1, hint = "Minimal environment and toolchain probe" },
+]
+
+[[dimension]]
+name = "complexity"
+values = [
+  { id = "smoke",         weight = 1, stratum = "hygiene",  hint = "Zero-touch or 1-command verification" },
+  { id = "single-file",   weight = 3, stratum = "core",     hint = "Change isolated to a single file" },
+  { id = "multi-file",    weight = 4, stratum = "core",     hint = "Changes spanning 2-5 files in one package" },
+  { id = "cross-package", weight = 3, stratum = "critical", hint = "Cross-package boundaries in monorepo" },
+  { id = "cross-repo",    weight = 1, stratum = "critical", hint = "Cross-repo tooling or workspace changes" },
+]
+
+[[dimension]]
+name = "edge_case"
+values = [
+  { id = "none",                       weight = 5, hint = "Standard happy path" },
+  { id = "typecheck-build-order",      weight = 4, source = "reval:TYPECHECK-BUILD-ORDER-CASCADE", hint = "Axial: loop_cascade" },
+  { id = "vitest-assertion-iteration", weight = 4, source = "reval:VITEST-ASSERTION-ITERATION", hint = "Axial: test_iteration" },
+  { id = "lint-ratchet",               weight = 3, source = "reval:LINT-RATCHET-HYGIENE-GATE", hint = "Axial: loop_cascade" },
+  { id = "secret-in-prompt",           weight = 3, source = "reval:AUTH-OAUTH-EXPIRED", hint = "Axial: env_auth_budget" },
+  { id = "stream-disconnect",          weight = 2, source = "reval:STREAM-DISCONNECT-ABORT", hint = "Axial: premature_kill" },
+  { id = "windows-path-separator",     weight = 2, source = "reval:SHELL-QUOTING-SPLIT", hint = "Axial: shell_trust_config" },
+  { id = "missing-lockfile-entry",     weight = 2, source = "reval:CONFIG-TOML-SCHEMA", hint = "Axial: shell_trust_config" },
+  { id = "binary-update-stub",         weight = 1, source = "reval:BINARY-SELF-UPDATE-STUB", hint = "Axial: runtime_drift" },
+  { id = "untracked-artifact-pollution", weight = 2, source = "reval:TEST-ARTIFACT-POLLUTION", hint = "Axial: runtime_drift" },
+  { id = "git-boundary-traversal",     weight = 1, source = "reval:GIT-TRUST-BOUNDARY", hint = "Axial: shell_trust_config" },
+  { id = "turn-budget-limit",          weight = 1, source = "reval:TOOL-BUDGET-EXHAUSTION", hint = "Axial: env_auth_budget" },
+]
+
+[[dimension]]
+name = "target_stack"
+values = [
+  { id = "ts-pnpm", weight = 5, hint = "TypeScript + pnpm monorepo (main platform stack)" },
+  { id = "rust",    weight = 4, hint = "Pure Rust 2021/2024 cargo workspace (eval kit)" },
+  { id = "python",  weight = 3, hint = "Python virtualenv and drama engine" },
+  { id = "go",      weight = 2, hint = "Go standard package module" },
+  { id = "mixed",   weight = 1, hint = "Polyglot workspace" },
+]
+
+[[constraint]]
+forbid = { complexity = "smoke", edge_case = "typecheck-build-order" }
+reason = "Smoke tasks do not trigger upstream package rebuild cascades."
+
+[[constraint]]
+forbid = { complexity = "smoke", edge_case = "vitest-assertion-iteration" }
+reason = "Smoke tasks do not iterate on complex unit test assertions."
+
+[[constraint]]
+forbid = { intent = "smoke", edge_case = "lint-ratchet" }
+reason = "Pure smoke tasks do not introduce lint warnings."
+
+[[constraint]]
+forbid = { intent = "read-only-review", edge_case = "untracked-artifact-pollution" }
+reason = "Read-only audits must not produce untracked artifacts."
+
+[[constraint]]
+forbid = { target_stack = "rust", edge_case = "typecheck-build-order" }
+reason = "Rust build-order cascades are managed automatically by Cargo."
+
+[[constraint]]
+forbid = { target_stack = "go", edge_case = "typecheck-build-order" }
+reason = "Go packages manage dependency ordering through imports."
