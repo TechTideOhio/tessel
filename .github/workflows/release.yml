@@ -58,6 +58,6 @@ jobs:
           Compress-Archive -Path target/${{ matrix.target }}/release/${{ matrix.artifact_name }} -DestinationPath ${{ matrix.asset_name }}
 
       - name: Upload release asset
-        uses: softprops/action-gh-release@c95fe1489396fe8a9ec87453c6632623e2003c09 # v2.2.1
+        uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda # v2.2.1
         with:
           files: ${{ matrix.asset_name }}
