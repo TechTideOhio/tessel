@@ -192,12 +192,29 @@ tessel/
 
 ---
 
-## Expert Patterns (Grounded in Real Agent Engineering)
+## Architectural Foundations (Alex Cinovoj / TechTideAI)
 
-`tessel` incorporates concrete design patterns from three senior engineering leaders:
-- **Peter Steinberger (@steipete)**: CLI-first over MCP, zero embedded LLM clients, standalone static binary, fast (< 50ms) execution, explicit `--json` harness envelope.
-- **Harrison Chase (LangChain / LangSmith)**: Trace-to-dataset flywheel, trajectories as evaluation units, deterministic code checks per case, stratified test suites.
-- **TJ Sweet (@orneryd / NornicDB & Mimir)**: Content-addressed ledger, unbroken lineage graphs (Case -> Tuple -> Dimension -> Trace), native Mermaid visualization, fail-closed validation.
+`tessel` is built on Alex Cinovoj's three core engineering pillars for autonomous systems:
+- **Pillar 1: Desktop Ergonomics**: CLI-first over MCP, zero embedded LLM clients, standalone static binary, fast (< 50ms) execution, explicit `--json` harness envelope.
+- **Pillar 2: Dataset Flywheel**: Empirical trace harvesting, trajectories as evaluation units, deterministic code checks per case, stratified test suites.
+- **Pillar 3: Lineage & Provenance**: Content-addressed ledger, unbroken lineage graphs (Case -> Tuple -> Dimension -> Trace), native Mermaid visualization, fail-closed validation.
+
+---
+
+## The Complete TideOS Eval Kit
+
+`tessel` is Tool 3 in The Complete TideOS Eval Kit:
+
+| # | Tool | Crate | Release Binary | Core Responsibility |
+|---|---|---|---|---|
+| **1** | **`reval`** | `reval` | `2.07 MB` | **Trace Error Analysis, Gating & MCP Server** |
+| **2** | **`gild`** | `gild` | `2.46 MB` | **Golden Dataset Governance & Stratification** |
+| **3** | **`tessel`** | `tessel-eval` | `1.97 MB` | **Combinatorial Synthetic Scenario Generator** |
+| **4** | **`assay`** | `assay-eval` | `2.09 MB` | **Deterministic Assertions First & In-Memory RLS** |
+| **5** | **`tide-rill`** | `tide-rill` | `1.54 MB` | **Offline Retrieval Quality & Answer Faithfulness** |
+| **6** | **`keel`** | `keel-eval` | `1.91 MB` | **Agent Trajectory Alignment & Step Efficiency (14 vs 3 calls)** |
+| **7** | **`temper`** | `temper-eval` | `0.89 MB` | **Multi-Trial Reliability (pass@k vs pass^k at Real Temperature)** |
+| **8** | **`parley`** | `parley-eval` | `1.77 MB` | **Simulated Users for Multi-Turn State, Memory & Policy Evals** |
 
 ---
 
